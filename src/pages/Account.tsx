@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { ArrowLeft, CheckCircle2, KeyRound, Loader2, QrCode, ShieldCheck, User as UserIcon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -55,103 +54,91 @@ const Account = () => {
   const [history, setHistory] = useState<HistoryRow[]>([]);
   const [historyLoading, setHistoryLoading] = useState(true);
 
-  useEffect(() => {
-    if (!user) return;
-    let active = true;
+useEffect(() => {
+  if (!user) return;
+  const token = localStorage.getItem("token");
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
-    (async () => {
-      const { data } = await supabase
-        .from("profiles")
-        .select("display_name, phone, organization")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      if (active && data) {
-        setProfile({
-          display_name: data.display_name ?? "",
-          phone: data.phone ?? "",
-          organization: data.organization ?? "",
-        });
-      }
-      if (active) setProfileLoading(false);
-    })();
-
-    (async () => {
-      const { data } = await supabase
-        .from("verification_history")
-        .select("id, batch_id, batch_label, action, tx_hash, created_at")
-        .order("created_at", { ascending: false })
-        .limit(100);
-      if (active) {
-        setHistory((data as HistoryRow[]) ?? []);
-        setHistoryLoading(false);
-      }
-    })();
-
-    return () => {
-      active = false;
-    };
-  }, [user]);
-
-  const handleSaveProfile = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!user) return;
-    const parsed = profileSchema.safeParse(profile);
-    if (!parsed.success) {
-      toast({ title: "Validation", description: parsed.error.issues[0].message, variant: "destructive" });
-      return;
-    }
-    setSavingProfile(true);
-    const { error } = await supabase.from("profiles").upsert(
-      {
-        user_id: user.id,
-        display_name: parsed.data.display_name || null,
-        phone: parsed.data.phone || null,
-        organization: parsed.data.organization || null,
-      },
-      { onConflict: "user_id" },
-    );
-    setSavingProfile(false);
-    if (error) {
-      toast({ title: "Erreur", description: "Impossible de sauvegarder le profil.", variant: "destructive" });
-    } else {
-      toast({ title: "Profil mis à jour", description: "Vos informations ont été enregistrées." });
-    }
-  };
-
-  const handleChangePassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!user?.email) return;
-    if (newPwd !== confirmPwd) {
-      toast({ title: "Erreur", description: "Les mots de passe ne correspondent pas.", variant: "destructive" });
-      return;
-    }
-    const parsed = passwordSchema.safeParse(newPwd);
-    if (!parsed.success) {
-      toast({ title: "Mot de passe faible", description: parsed.error.issues[0].message, variant: "destructive" });
-      return;
-    }
-    setChangingPwd(true);
-    // OWASP: re-authenticate before sensitive change
-    const { error: signInErr } = await supabase.auth.signInWithPassword({
-      email: user.email,
-      password: currentPwd,
+  fetch(`${API_URL}/api/profile`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+    .then((r) => r.json())
+    .then((data) => {
+      if (data) setProfile({
+        display_name: data.display_name ?? "",
+        phone: data.phone ?? "",
+        organization: data.organization ?? "",
+      });
+      setProfileLoading(false);
     });
-    if (signInErr) {
-      setChangingPwd(false);
-      toast({ title: "Erreur", description: "Mot de passe actuel incorrect.", variant: "destructive" });
-      return;
-    }
-    const { error } = await supabase.auth.updateUser({ password: newPwd });
-    setChangingPwd(false);
-    if (error) {
-      toast({ title: "Erreur", description: error.message, variant: "destructive" });
-    } else {
-      setCurrentPwd("");
-      setNewPwd("");
-      setConfirmPwd("");
-      toast({ title: "Mot de passe modifié", description: "Votre mot de passe a été mis à jour." });
-    }
-  };
+
+  fetch(`${API_URL}/api/verification-history`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+    .then((r) => r.json())
+    .then((data) => {
+      setHistory(data ?? []);
+      setHistoryLoading(false);
+    });
+}, [user]);
+
+
+
+const handleSaveProfile = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!user) return;
+  const parsed = profileSchema.safeParse(profile);
+  if (!parsed.success) {
+    toast({ title: "Validation", description: parsed.error.issues[0].message, variant: "destructive" });
+    return;
+  }
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+  const token = localStorage.getItem("token");
+  setSavingProfile(true);
+  const res = await fetch(`${API_URL}/api/profile`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify(parsed.data),
+  });
+  const data = await res.json();
+  setSavingProfile(false);
+  if (data.error) {
+    toast({ title: "Erreur", description: "Impossible de sauvegarder le profil.", variant: "destructive" });
+  } else {
+    toast({ title: "Profil mis à jour" });
+  }
+};
+
+
+
+const handleChangePassword = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (newPwd !== confirmPwd) {
+    toast({ title: "Erreur", description: "Les mots de passe ne correspondent pas.", variant: "destructive" });
+    return;
+  }
+  const parsed = passwordSchema.safeParse(newPwd);
+  if (!parsed.success) {
+    toast({ title: "Mot de passe faible", description: parsed.error.issues[0].message, variant: "destructive" });
+    return;
+  }
+  setChangingPwd(true);
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${API_URL}/api/change-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ currentPassword: currentPwd, newPassword: newPwd }),
+  });
+  const data = await res.json();
+  setChangingPwd(false);
+  if (data.error) {
+    toast({ title: "Erreur", description: data.error, variant: "destructive" });
+  } else {
+    setCurrentPwd(""); setNewPwd(""); setConfirmPwd("");
+    toast({ title: "Mot de passe modifié" });
+  }
+};
 
   return (
     <div className="min-h-screen bg-background">

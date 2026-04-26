@@ -3,8 +3,10 @@ import { ReactNode } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Loader2 } from "lucide-react";
 
+
+
 export const ProtectedRoute = ({ children }: { children: ReactNode }) => {
-  const { session, loading } = useAuth();
+  const { user, loading } = useAuth();
   const location = useLocation();
 
   if (loading) {
@@ -15,7 +17,7 @@ export const ProtectedRoute = ({ children }: { children: ReactNode }) => {
     );
   }
 
-  if (!session) {
+  if (!user) {
     return <Navigate to="/auth" replace state={{ from: location.pathname }} />;
   }
 

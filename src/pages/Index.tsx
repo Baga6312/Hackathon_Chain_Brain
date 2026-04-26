@@ -3,6 +3,7 @@ import { Batch, initialBatches, simulateBatch } from "@/data/mockData";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { SummaryKPIs } from "@/components/dashboard/SummaryKPIs";
 import { AlgaeTypesPanel } from "@/components/dashboard/AlgaeTypesPanel";
+import { apiClient } from "@/integrations/supabase/client";
 import { BlockchainPanel } from "@/components/dashboard/BlockchainPanel";
 import { EnvironmentPanel } from "@/components/dashboard/EnvironmentPanel";
 import { QualityPanel } from "@/components/dashboard/QualityPanel";
@@ -23,6 +24,11 @@ const Index = () => {
     const t = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(t);
   }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+      apiClient.logBatches(batches);
+    }, [batches]);
 
   const runSimulation = () => {
     if (simulating) return;

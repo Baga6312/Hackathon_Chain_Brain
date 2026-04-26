@@ -1,4 +1,4 @@
-import { supabase } from "@/integrations/supabase/client";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 export type VerificationAction = "qr_view" | "verify";
 
@@ -11,16 +11,14 @@ export interface LogVerificationInput {
 }
 
 export const logVerification = async (input: LogVerificationInput) => {
-  const { data: sessionData } = await supabase.auth.getSession();
-  const userId = sessionData.session?.user.id;
-  if (!userId) return;
-
-  await supabase.from("verification_history").insert({
-    user_id: userId,
-    batch_id: input.batchId,
-    batch_label: input.batchLabel ?? null,
-    action: input.action,
-    tx_hash: input.txHash ?? null,
-    metadata: (input.metadata ?? null) as never,
+  const token = localStorage.getItem("token");
+  if (!token) return;
+  await fetch(`${API_URL}/api/verification-history`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(input),
   });
 };

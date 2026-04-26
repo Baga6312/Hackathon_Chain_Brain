@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Leaf, Loader2, Shield } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { signInSchema, signUpSchema } from "@/lib/validation";
 import { toast } from "@/hooks/use-toast";
 
@@ -23,6 +23,8 @@ const Auth = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const redirectTo = sanitizeRedirect((location.state as { from?: string })?.from);
+  const { signIn, signUp } = useAuth();
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,22 +44,13 @@ const Auth = () => {
     setSubmitting(true);
     try {
       if (mode === "signin") {
-        const { error } = await supabase.auth.signInWithPassword({
-          email: parsed.data.email,
-          password: parsed.data.password,
-        });
-        if (error) throw error;
+        const { error } = await signIn(parsed.data.email, parsed.data.password);
+          if (error) throw new Error(error);
         toast({ title: "Welcome back", description: "Signed in successfully." });
         navigate(redirectTo, { replace: true });
       } else {
-        const { error } = await supabase.auth.signUp({
-          email: parsed.data.email,
-          password: parsed.data.password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/`,
-          },
-        });
-        if (error) throw error;
+        const { error } = await signUp(parsed.data.email, parsed.data.password);
+          if (error) throw new Error(error);
         toast({
           title: "Account created",
           description: "You're signed in. Welcome to AlgaeTrace.",
