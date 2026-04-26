@@ -1,0 +1,98 @@
+# IoT Smart Eco-Algae Farm Simulation
+
+## Concept & Vision
+
+An immersive, professional-grade IoT simulation that brings your algae farming system to life. This isn't just a demo—it's a compelling visual story that shows customers exactly how their investment monitors, processes, and protects their ecosystem. The interface feels like a premium control center from a sci-fi film, making complex IoT concepts immediately tangible and trustworthy.
+
+## Design Language
+
+### Aesthetic Direction
+**Reference:** Futuristic biotech command center meets eco-conscious dashboard. Think Blade Runner's interfaces merged with modern sustainability dashboards—dark backgrounds with glowing data visualizations that feel both high-tech and organic.
+
+### Color Palette
+- **Primary Background:** `#0a0f1a` (deep space blue-black)
+- **Secondary Background:** `#141e30` (midnight panel)
+- **Primary Accent:** `#00d9a5` (algae green - main data color)
+- **Secondary Accent:** `#00b4d8` (water blue - secondary data)
+- **Warning:** `#ffd166` (amber warning)
+- **Danger:** `#ef476f` (coral red alert)
+- **Success:** `#06d6a0` (mint stable)
+- **Text Primary:** `#e8f4f8` (bright white-blue)
+- **Text Secondary:** `#7a8c99` (muted blue-gray)
+
+### Typography
+- **Primary:** "Orbitron" - for headers and data displays (tech/futuristic feel)
+- **Secondary:** "Roboto Mono" - for sensor readings and technical data
+- **Body:** "Inter" - for descriptions and labels
+
+### Motion Philosophy
+- **Data updates:** Smooth number transitions with easing (not jarring jumps)
+- **State changes:** Pulse animations for alerts, breathing glow for active systems
+- **Sensor readings:** Subtle wave animations to suggest liquid movement
+- **Health score:** Animated arc gauge with smooth transitions
+- **Page load:** Staggered fade-in from left to right, simulating data flowing through the system
+
+## Features
+
+### 1. Real-Time Sensor Simulation
+- **Temperature:** 18-32°C range, simulated with realistic fluctuation
+- **pH Level:** 6.5-8.5 range, slower drift simulation
+- **Turbidity:** 0-1000 NTU, indicates algae density
+- Each sensor shows current reading, status indicator, and mini sparkline
+
+### 2. Ecosystem Health Score (0-100)
+- Animated semicircular gauge with gradient fill
+- Score Breakdown: Temperature (33.3%), pH (33.3%), Turbidity (33.3%)
+- Visual States: 70-100 Green (STABLE), 40-69 Yellow (WARNING), 0-39 Red (DANGER)
+
+### 3. Algae Farm Visualization
+- Animated SVG tanks with wave animation
+- Floating algae particle system
+- Color shifts based on health state
+- Bubble animations suggesting aeration
+
+### 4. System Data Flow
+- Animated flow diagram: Sensors → ESP32 Edge → Intelligence → Decision → Alerts
+- Each node pulses when data passes through
+
+### 5. ESP32 Edge Unit Panel
+- Visual representation of ESP32 chip
+- Processing indicators and Edge Computing badge
+
+### 6. Communication Layer
+- WiFi Signal Animation
+- MQTT Topic Display
+- Dashboard connection status
+
+### 7. Alert System
+- Status Cards: STABLE / WARNING / DANGER
+- Active alerts with recommended actions
+
+### 8. Historical Charts
+- Line chart showing last 60 seconds of data
+- Three overlaid lines for temperature, pH, and turbidity
+
+### 9. Sustainability Dashboard
+- Water Saved percentage
+- CO2 Offset
+- Oxygen Produced
+- Energy Efficiency
+
+### 10. Simulation Controls
+- Play/Pause simulation
+- Speed control: 0.5x, 1x, 2x, 5x
+- Scenario buttons: Normal, Heat Wave, pH Crash, Algae Bloom
+- Reset button
+
+## Technical Approach
+
+### Stack
+- Single HTML file with embedded CSS and JavaScript
+- Vanilla JS for maximum compatibility
+- CSS animations for all motion
+- RequestAnimationFrame for smooth data updates
+
+### Performance
+- GPU accelerated CSS transforms
+- Chart data points limited to last 60
+- Clean intervals on pause

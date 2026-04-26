@@ -1,31 +1,683 @@
-<!doctype html>
-<html lang="en" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AlgaeTrace Tunisia — Algae Traceability Control Center</title>
-    <meta name="description" content="Real-time algae production traceability, blockchain verification, environmental analytics and AI quality scoring for Tunisia&#39;s coastal aquaculture.">
-    <meta name="author" content="AlgaeTrace Tunisia" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Eco-Algae Farm - IoT System Architecture</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Roboto+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    
-    
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4e752a5f-2a44-4023-952d-23dca97a2882/id-preview-6c85429e--363cdec0-1751-465c-9a15-8deb5ebcc68f.lovable.app-1777167979711.png">
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0f1a 0%, #141e30 100%);
+            min-height: 100vh;
+            padding: 40px;
+        }
 
-    <meta name="twitter:card" content="summary_large_image" />
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <meta property="og:title" content="AlgaeTrace Tunisia — Algae Traceability Control Center">
-  <meta name="twitter:title" content="AlgaeTrace Tunisia — Algae Traceability Control Center">
-  <meta property="og:description" content="Real-time algae production traceability, blockchain verification, environmental analytics and AI quality scoring for Tunisia&#39;s coastal aquaculture.">
-  <meta name="twitter:description" content="Real-time algae production traceability, blockchain verification, environmental analytics and AI quality scoring for Tunisia&#39;s coastal aquaculture.">
-  <meta name="twitter:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4e752a5f-2a44-4023-952d-23dca97a2882/id-preview-6c85429e--363cdec0-1751-465c-9a15-8deb5ebcc68f.lovable.app-1777167979711.png">
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #00d9a5, #00b4d8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #7a8c99;
+            font-size: 1.1rem;
+        }
+
+        .architecture-diagram {
+            background: rgba(20, 30, 48, 0.8);
+            border: 1px solid rgba(0, 217, 165, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        .diagram-svg {
+            width: 100%;
+            height: auto;
+        }
+
+        /* SVG Styles */
+        .component-group {
+            transition: transform 0.3s ease;
+        }
+
+        .component-group:hover {
+            transform: scale(1.02);
+        }
+
+        .farm-bg {
+            fill: url(#farmGradient);
+        }
+
+        .tank-water {
+            fill: url(#waterGradient);
+        }
+
+        .sensor-glow {
+            filter: drop-shadow(0 0 8px rgba(0, 217, 165, 0.6));
+        }
+
+        .esp32-body {
+            fill: #1a1a2e;
+            stroke: #00d9a5;
+            stroke-width: 2;
+        }
+
+        .connection-line {
+            stroke: #00d9a5;
+            stroke-width: 2;
+            stroke-dasharray: 8 4;
+            animation: flow 1.5s linear infinite;
+        }
+
+        @keyframes flow {
+            0% { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: -24; }
+        }
+
+        .data-packet {
+            fill: #00d9a5;
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; r: 6; }
+            50% { opacity: 1; r: 8; }
+        }
+
+        .cloud-bg {
+            fill: rgba(0, 180, 216, 0.2);
+        }
+
+        .dashboard-bg {
+            fill: #0d1420;
+            stroke: rgba(0, 217, 165, 0.3);
+            stroke-width: 1;
+        }
+
+        .label-text {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            fill: #e8f4f8;
+        }
+
+        .component-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            fill: #00d9a5;
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            fill: #7a8c99;
+            font-weight: 600;
+        }
+
+        .hardware-pin {
+            fill: #888;
+        }
+
+        .sensor-reading {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 9px;
+            fill: #00d9a5;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-text {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.85rem;
+            color: #e8f4f8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            .header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Smart Eco-Algae Farm IoT Architecture</h1>
+            <p>Complete system overview showing sensors, edge processing, and cloud connectivity</p>
+        </div>
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+        <div class="architecture-diagram">
+            <svg class="diagram-svg" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <!-- Gradients -->
+                    <linearGradient id="farmGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#1a3a2a;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#0d1f15;stop-opacity:1" />
+                    </linearGradient>
+
+                    <linearGradient id="waterGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#00d9a5;stop-opacity:0.4" />
+                        <stop offset="100%" style="stop-color:#00b4d8;stop-opacity:0.6" />
+                    </linearGradient>
+
+                    <linearGradient id="tankGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:rgba(0, 217, 165, 0.3);stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:rgba(0, 180, 216, 0.4);stop-opacity:1" />
+                    </linearGradient>
+
+                    <linearGradient id="esp32Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#2a2a4e;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#1a1a2e;stop-opacity:1" />
+                    </linearGradient>
+
+                    <linearGradient id="cloudGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:rgba(0, 180, 216, 0.3);stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:rgba(0, 180, 216, 0.1);stop-opacity:1" />
+                    </linearGradient>
+
+                    <!-- Glow filter -->
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+
+                    <!-- Strong glow -->
+                    <filter id="strongGlow">
+                        <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+
+                <!-- ==================== FARM AREA ==================== -->
+                <g id="farm-area">
+                    <!-- Farm Background -->
+                    <rect x="50" y="280" width="400" height="320" rx="20" class="farm-bg" />
+
+                    <!-- Farm grid pattern -->
+                    <g stroke="rgba(0, 217, 165, 0.1)" stroke-width="1">
+                        <line x1="50" y1="350" x2="450" y2="350"/>
+                        <line x1="50" y1="420" x2="450" y2="420"/>
+                        <line x1="50" y1="490" x2="450" y2="490"/>
+                        <line x1="150" y1="280" x2="150" y2="600"/>
+                        <line x1="250" y1="280" x2="250" y2="600"/>
+                        <line x1="350" y1="280" x2="350" y2="600"/>
+                    </g>
+
+                    <!-- Section label -->
+                    <text x="70" y="310" class="section-title">🌱 GROWTH CHAMBERS</text>
+
+                    <!-- Tank 1 -->
+                    <g class="component-group" id="tank1">
+                        <rect x="80" y="340" width="100" height="140" rx="15" fill="rgba(0, 217, 165, 0.1)" stroke="#00d9a5" stroke-width="2"/>
+                        <rect x="85" y="390" width="90" height="85" rx="0 0 13 13" fill="url(#tankGradient)"/>
+                        <!-- Algae pattern -->
+                        <circle cx="100" cy="430" r="8" fill="rgba(0, 217, 165, 0.6)"/>
+                        <circle cx="120" cy="420" r="6" fill="rgba(0, 217, 165, 0.5)"/>
+                        <circle cx="140" cy="435" r="7" fill="rgba(0, 217, 165, 0.4)"/>
+                        <circle cx="130" cy="450" r="5" fill="rgba(0, 217, 165, 0.5)"/>
+                        <text x="130" y="500" text-anchor="middle" class="component-label">TANK A</text>
+                    </g>
+
+                    <!-- Tank 2 -->
+                    <g class="component-group" id="tank2">
+                        <rect x="200" y="340" width="100" height="140" rx="15" fill="rgba(0, 217, 165, 0.1)" stroke="#00d9a5" stroke-width="2"/>
+                        <rect x="205" y="390" width="90" height="85" rx="0 0 13 13" fill="url(#tankGradient)"/>
+                        <circle cx="220" cy="425" r="7" fill="rgba(0, 217, 165, 0.5)"/>
+                        <circle cx="245" cy="415" r="9" fill="rgba(0, 217, 165, 0.6)"/>
+                        <circle cx="270" cy="430" r="6" fill="rgba(0, 217, 165, 0.4)"/>
+                        <text x="250" y="500" text-anchor="middle" class="component-label">TANK B</text>
+                    </g>
+
+                    <!-- Tank 3 -->
+                    <g class="component-group" id="tank3">
+                        <rect x="320" y="340" width="100" height="140" rx="15" fill="rgba(0, 217, 165, 0.1)" stroke="#00d9a5" stroke-width="2"/>
+                        <rect x="325" y="390" width="90" height="85" rx="0 0 13 13" fill="url(#tankGradient)"/>
+                        <circle cx="345" cy="420" r="6" fill="rgba(0, 217, 165, 0.5)"/>
+                        <circle cx="365" cy="440" r="8" fill="rgba(0, 217, 165, 0.6)"/>
+                        <circle cx="385" cy="425" r="7" fill="rgba(0, 217, 165, 0.4)"/>
+                        <text x="370" y="500" text-anchor="middle" class="component-label">TANK C</text>
+                    </g>
+
+                    <!-- Water pipes connecting tanks -->
+                    <path d="M130 480 L200 480" stroke="#00b4d8" stroke-width="4" fill="none"/>
+                    <path d="M250 480 L320 480" stroke="#00b4d8" stroke-width="4" fill="none"/>
+                    <path d="M180 340 L180 280" stroke="#00b4d8" stroke-width="4" fill="none"/>
+                    <path d="M300 340 L300 280" stroke="#00b4d8" stroke-width="4" fill="none"/>
+                    <path d="M420 340 L420 280" stroke="#00b4d8" stroke-width="4" fill="none"/>
+
+                    <!-- Pump -->
+                    <g id="pump">
+                        <rect x="430" y="350" width="30" height="40" rx="5" fill="#2a2a4e" stroke="#00d9a5" stroke-width="1"/>
+                        <text x="445" y="375" text-anchor="middle" font-size="8" fill="#00d9a5">PUMP</text>
+                        <path d="M420 370 L430 370" stroke="#00d9a5" stroke-width="2"/>
+                        <path d="M460 370 L470 370" stroke="#00d9a5" stroke-width="2"/>
+                    </g>
+
+                    <!-- Bubbles -->
+                    <g fill="rgba(255, 255, 255, 0.4)">
+                        <circle cx="110" cy="400" r="3"><animate attributeName="cy" from="450" to="390" dur="3s" repeatCount="indefinite"/></circle>
+                        <circle cx="130" cy="405" r="2"><animate attributeName="cy" from="450" to="395" dur="2.5s" repeatCount="indefinite"/></circle>
+                        <circle cx="350" cy="410" r="3"><animate attributeName="cy" from="450" to="400" dur="3.2s" repeatCount="indefinite"/></circle>
+                        <circle cx="260" cy="405" r="2"><animate attributeName="cy" from="450" to="395" dur="2.8s" repeatCount="indefinite"/></circle>
+                    </g>
+
+                    <!-- Temperature indicator in water -->
+                    <g>
+                        <rect x="90" y="455" width="60" height="15" rx="3" fill="rgba(0, 0, 0, 0.3)"/>
+                        <text x="120" y="466" text-anchor="middle" class="sensor-reading">24.5°C</text>
+                    </g>
+                </g>
+
+                <!-- ==================== SENSORS ==================== -->
+                <g id="sensors">
+                    <text x="100" y="560" class="section-title">📊 SENSORS</text>
+
+                    <!-- Temperature Sensor (DS18B20) -->
+                    <g class="component-group sensor-glow" id="temp-sensor">
+                        <rect x="80" y="580" width="90" height="70" rx="10" fill="rgba(239, 71, 111, 0.2)" stroke="#ef476f" stroke-width="2"/>
+                        <!-- Sensor icon -->
+                        <circle cx="110" cy="605" r="15" fill="none" stroke="#ef476f" stroke-width="2"/>
+                        <path d="M110 598 L110 612 M103 605 L117 605" stroke="#ef476f" stroke-width="2"/>
+                        <!-- Temperature symbol -->
+                        <text x="145" y="605" font-size="16" fill="#ef476f">🌡</text>
+                        <text x="125" y="640" text-anchor="middle" class="component-label">DS18B20</text>
+                        <text x="125" y="652" text-anchor="middle" class="label-text" fill="#ef476f">24.5°C</text>
+                    </g>
+
+                    <!-- pH Sensor -->
+                    <g class="component-group sensor-glow" id="ph-sensor">
+                        <rect x="190" y="580" width="90" height="70" rx="10" fill="rgba(255, 209, 102, 0.2)" stroke="#ffd166" stroke-width="2"/>
+                        <!-- pH icon -->
+                        <circle cx="220" cy="605" r="15" fill="none" stroke="#ffd166" stroke-width="2"/>
+                        <text x="220" y="610" text-anchor="middle" font-size="12" fill="#ffd166">pH</text>
+                        <text x="255" y="605" font-size="16" fill="#ffd166">⚗</text>
+                        <text x="235" y="640" text-anchor="middle" class="component-label">pH SENSOR</text>
+                        <text x="235" y="652" text-anchor="middle" class="label-text" fill="#ffd166">7.2</text>
+                    </g>
+
+                    <!-- Turbidity Sensor -->
+                    <g class="component-group sensor-glow" id="turbidity-sensor">
+                        <rect x="300" y="580" width="90" height="70" rx="10" fill="rgba(0, 180, 216, 0.2)" stroke="#00b4d8" stroke-width="2"/>
+                        <!-- Turbidity icon (light beam) -->
+                        <circle cx="330" cy="605" r="12" fill="none" stroke="#00b4d8" stroke-width="2"/>
+                        <path d="M330 595 L330 615" stroke="#00b4d8" stroke-width="1" stroke-dasharray="2 2"/>
+                        <text x="345" y="605" font-size="16" fill="#00b4d8">💧</text>
+                        <text x="345" y="640" text-anchor="middle" class="component-label">TURBIDITY</text>
+                        <text x="345" y="652" text-anchor="middle" class="label-text" fill="#00b4d8">250 NTU</text>
+                    </g>
+
+                    <!-- Sensor cables connecting to ESP32 -->
+                    <path d="M125 650 L125 680 L200 720" stroke="#00d9a5" stroke-width="2" fill="none" class="connection-line"/>
+                    <path d="M235 650 L235 680 L250 720" stroke="#ffd166" stroke-width="2" fill="none" class="connection-line"/>
+                    <path d="M345 650 L345 680 L300 720" stroke="#00b4d8" stroke-width="2" fill="none" class="connection-line"/>
+                </g>
+
+                <!-- ==================== ESP32 ==================== -->
+                <g id="esp32" filter="url(#glow)">
+                    <text x="550" y="280" class="section-title">🔌 EDGE PROCESSING</text>
+
+                    <!-- ESP32 Board -->
+                    <g class="component-group">
+                        <!-- Main board -->
+                        <rect x="520" y="310" width="140" height="180" rx="8" fill="url(#esp32Gradient)" stroke="#00d9a5" stroke-width="2"/>
+
+                        <!-- ESP32 chip -->
+                        <rect x="545" y="340" width="90" height="50" rx="5" fill="#0d0d1a" stroke="#00d9a5" stroke-width="1"/>
+                        <text x="590" y="370" text-anchor="middle" font-family="Orbitron" font-size="14" font-weight="bold" fill="#00d9a5">ESP32</text>
+
+                        <!-- WiFi antenna -->
+                        <path d="M555 330 Q545 310 560 300" stroke="#00d9a5" stroke-width="2" fill="none"/>
+                        <circle cx="560" cy="300" r="4" fill="#00d9a5">
+                            <animate attributeName="opacity" values="1;0.5;1" dur="1s" repeatCount="indefinite"/>
+                        </circle>
+
+                        <!-- USB port -->
+                        <rect x="555" y="400" width="30" height="10" rx="2" fill="#333" stroke="#00d9a5" stroke-width="1"/>
+
+                        <!-- GPIO pins -->
+                        <g fill="#888">
+                            <rect x="530" y="400" width="4" height="8" rx="1"/>
+                            <rect x="538" y="400" width="4" height="8" rx="1"/>
+                            <rect x="546" y="400" width="4" height="8" rx="1"/>
+                            <rect x="600" y="400" width="4" height="8" rx="1"/>
+                            <rect x="608" y="400" width="4" height="8" rx="1"/>
+                            <rect x="616" y="400" width="4" height="8" rx="1"/>
+                            <rect x="624" y="400" width="4" height="8" rx="1"/>
+                        </g>
+
+                        <!-- Power LED -->
+                        <circle cx="630" cy="355" r="4" fill="#06d6a0">
+                            <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+                        </circle>
+                        <text x="638" y="358" class="label-text" fill="#06d6a0">PWR</text>
+
+                        <!-- WiFi LED -->
+                        <circle cx="630" cy="375" r="4" fill="#00b4d8">
+                            <animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite"/>
+                        </circle>
+                        <text x="638" y="378" class="label-text" fill="#00b4d8">WiFi</text>
+
+                        <!-- Labels -->
+                        <text x="590" y="440" text-anchor="middle" class="component-label">ESP32-WROOM-32</text>
+                        <text x="590" y="455" text-anchor="middle" class="label-text">WiFi + Bluetooth</text>
+                        <text x="590" y="470" text-anchor="middle" class="label-text">240MHz Dual Core</text>
+                    </g>
+
+                    <!-- Processing flow arrows -->
+                    <g fill="#00d9a5" font-size="20">
+                        <text x="550" y="335">→</text>
+                        <text x="595" y="335">→</text>
+                        <text x="640" y="335">→</text>
+                    </g>
+
+                    <!-- Data flow from sensors -->
+                    <path d="M200 720 L200 750 L540 750 L540 500" stroke="#00d9a5" stroke-width="2" fill="none" class="connection-line"/>
+
+                    <!-- Data packet animation -->
+                    <circle r="5" fill="#00d9a5">
+                        <animateMotion dur="2s" repeatCount="indefinite" path="M200,720 L200,750 L540,750 L540,500"/>
+                    </circle>
+                </g>
+
+                <!-- ==================== INTELLIGENCE & DECISION ==================== -->
+                <g id="intelligence">
+                    <text x="700" y="280" class="section-title">🧠 INTELLIGENCE</text>
+
+                    <!-- Logic box -->
+                    <g class="component-group">
+                        <rect x="700" y="310" width="150" height="180" rx="12" fill="rgba(0, 217, 165, 0.1)" stroke="#00d9a5" stroke-width="2"/>
+
+                        <!-- Brain icon -->
+                        <ellipse cx="775" cy="350" rx="35" ry="30" fill="none" stroke="#00d9a5" stroke-width="2"/>
+                        <path d="M755 340 Q775 330 795 340 M755 355 Q775 365 795 355 M775 330 L775 370" stroke="#00d9a5" stroke-width="1.5" fill="none"/>
+
+                        <!-- Health Score display -->
+                        <rect x="720" y="400" width="110" height="35" rx="5" fill="#0d1420" stroke="#00d9a5" stroke-width="1"/>
+                        <text x="775" y="415" text-anchor="middle" font-family="Orbitron" font-size="16" font-weight="bold" fill="#00d9a5">85</text>
+                        <text x="775" y="428" text-anchor="middle" font-family="Roboto Mono" font-size="8" fill="#7a8c99">HEALTH SCORE</text>
+
+                        <!-- Status indicators -->
+                        <g>
+                            <circle cx="730" cy="455" r="5" fill="#06d6a0"/>
+                            <text x="740" y="458" class="label-text">STABLE</text>
+                        </g>
+
+                        <text x="775" y="485" text-anchor="middle" class="component-label">RULE-BASED AI</text>
+                    </g>
+
+                    <!-- Connection to ESP32 -->
+                    <path d="M660 400 L700 400" stroke="#00d9a5" stroke-width="2" class="connection-line"/>
+                    <circle r="4" fill="#00d9a5">
+                        <animateMotion dur="1.5s" repeatCount="indefinite" path="M660,400 L700,400"/>
+                    </circle>
+                </g>
+
+                <!-- ==================== CLOUD & COMMUNICATION ==================== -->
+                <g id="cloud">
+                    <text x="470" y="80" class="section-title">📡 COMMUNICATION LAYER</text>
+
+                    <!-- Cloud representation -->
+                    <g class="component-group">
+                        <!-- Cloud shape -->
+                        <path d="M500 80 Q480 80 480 100 Q460 100 460 120 Q460 140 480 140 L560 140 Q580 140 580 120 Q600 120 600 100 Q600 80 580 80 Z"
+                              fill="url(#cloudGradient)" stroke="#00b4d8" stroke-width="2"/>
+
+                        <!-- WiFi waves -->
+                        <path d="M490 130 Q470 130 470 145" stroke="#00d9a5" stroke-width="2" fill="none" opacity="0.5">
+                            <animate attributeName="opacity" values="0.5;1;0.5" dur="1s" repeatCount="indefinite"/>
+                        </path>
+                        <path d="M480 140 Q450 140 450 160" stroke="#00d9a5" stroke-width="2" fill="none" opacity="0.3">
+                            <animate attributeName="opacity" values="0.3;0.8;0.3" dur="1s" repeatCount="indefinite"/>
+                        </path>
+
+                        <!-- Cloud label -->
+                        <text x="530" y="110" text-anchor="middle" class="component-label">MQTT BROKER</text>
+                        <text x="530" y="125" text-anchor="middle" class="label-text">WiFi / Internet</text>
+                    </g>
+
+                    <!-- Data streams to cloud -->
+                    <path d="M590 500 L590 450 L530 130" stroke="#00d9a5" stroke-width="2" fill="none" class="connection-line"/>
+                    <path d="M850 400 L850 200 L530 130" stroke="#00d9a5" stroke-width="2" fill="none" class="connection-line"/>
+
+                    <!-- Data packets -->
+                    <circle r="4" fill="#00d9a5">
+                        <animateMotion dur="2s" repeatCount="indefinite" path="M590,500 L590,450 L530,130"/>
+                    </circle>
+                    <circle r="4" fill="#00d9a5">
+                        <animateMotion dur="2.5s" repeatCount="indefinite" path="M850,400 L850,200 L530,130"/>
+                    </circle>
+                </g>
+
+                <!-- ==================== DASHBOARD & VISUALIZATION ==================== -->
+                <g id="dashboard">
+                    <text x="950" y="80" class="section-title">📊 VISUALIZATION</text>
+
+                    <!-- Dashboard frame -->
+                    <g class="component-group">
+                        <rect x="900" y="100" width="250" height="350" rx="10" fill="#0d1420" stroke="#00d9a5" stroke-width="2"/>
+
+                        <!-- Dashboard header -->
+                        <rect x="900" y="100" width="250" height="40" rx="10 10 0 0" fill="rgba(0, 217, 165, 0.2)"/>
+                        <text x="1025" y="125" text-anchor="middle" font-family="Orbitron" font-size="12" font-weight="bold" fill="#00d9a5">NODE-RED DASHBOARD</text>
+                        <circle cx="1120" cy="120" r="5" fill="#06d6a0">
+                            <animate attributeName="opacity" values="1;0.5;1" dur="1.5s" repeatCount="indefinite"/>
+                        </circle>
+
+                        <!-- Dashboard content -->
+                        <!-- Health gauge -->
+                        <g transform="translate(925, 160)">
+                            <text x="50" y="10" class="label-text">Ecosystem Health</text>
+                            <path d="M10 50 A40 40 0 0 1 90 50" fill="none" stroke="#333" stroke-width="8"/>
+                            <path d="M10 50 A40 40 0 0 1 90 50" fill="none" stroke="url(#healthGradient)" stroke-width="8" stroke-dasharray="85 100">
+                                <animate attributeName="stroke-dasharray" values="0 100;85 100" dur="1.5s" fill="freeze"/>
+                            </path>
+                            <text x="50" y="55" text-anchor="middle" font-family="Orbitron" font-size="18" font-weight="bold" fill="#00d9a5">85</text>
+                            <text x="50" y="70" text-anchor="middle" font-family="Roboto Mono" font-size="8" fill="#06d6a0">STABLE</text>
+                        </g>
+
+                        <!-- Sensor readings -->
+                        <g transform="translate(925, 240)">
+                            <!-- Temperature -->
+                            <rect x="0" y="0" width="110" height="40" rx="5" fill="rgba(239, 71, 111, 0.1)" stroke="#ef476f" stroke-width="1"/>
+                            <text x="10" y="15" class="label-text" fill="#ef476f">Temperature</text>
+                            <text x="10" y="32" font-family="Orbitron" font-size="14" font-weight="bold" fill="#ef476f">24.5°C</text>
+
+                            <!-- pH -->
+                            <rect x="120" y="0" width="110" height="40" rx="5" fill="rgba(255, 209, 102, 0.1)" stroke="#ffd166" stroke-width="1"/>
+                            <text x="130" y="15" class="label-text" fill="#ffd166">pH Level</text>
+                            <text x="130" y="32" font-family="Orbitron" font-size="14" font-weight="bold" fill="#ffd166">7.2</text>
+                        </g>
+
+                        <g transform="translate(925, 290)">
+                            <!-- Turbidity -->
+                            <rect x="0" y="0" width="110" height="40" rx="5" fill="rgba(0, 180, 216, 0.1)" stroke="#00b4d8" stroke-width="1"/>
+                            <text x="10" y="15" class="label-text" fill="#00b4d8">Turbidity</text>
+                            <text x="10" y="32" font-family="Orbitron" font-size="14" font-weight="bold" fill="#00b4d8">250 NTU</text>
+
+                            <!-- O2 Production -->
+                            <rect x="120" y="0" width="110" height="40" rx="5" fill="rgba(0, 217, 165, 0.1)" stroke="#00d9a5" stroke-width="1"/>
+                            <text x="130" y="15" class="label-text" fill="#00d9a5">O₂ Output</text>
+                            <text x="130" y="32" font-family="Orbitron" font-size="14" font-weight="bold" fill="#00d9a5">24.8 L/day</text>
+                        </g>
+
+                        <!-- Mini chart -->
+                        <g transform="translate(925, 340)">
+                            <text x="0" y="15" class="label-text">Last 60 seconds</text>
+                            <rect x="0" y="20" width="230" height="80" rx="5" fill="rgba(0,0,0,0.3)" stroke="rgba(0,217,165,0.2)" stroke-width="1"/>
+
+                            <!-- Chart lines -->
+                            <polyline points="10,80 30,70 50,75 70,65 90,60 110,55 130,50 150,45 170,50 190,55 210,50 230,45"
+                                      fill="none" stroke="#ef476f" stroke-width="2"/>
+                            <polyline points="10,90 30,85 50,88 70,82 90,78 110,75 130,72 150,70 170,68 190,65 210,62 230,60"
+                                      fill="none" stroke="#00b4d8" stroke-width="2"/>
+                        </g>
+
+                        <!-- Sustainability metrics -->
+                        <g transform="translate(925, 405)">
+                            <text x="0" y="15" class="label-text">Sustainability Impact</text>
+                            <rect x="0" y="20" width="230" height="30" rx="5" fill="rgba(0,217,165,0.1)"/>
+                            <text x="10" y="40" class="label-text" fill="#00d9a5">💧 85% Water Saved</text>
+                            <text x="120" y="40" class="label-text" fill="#06d6a0">🌱 12.4 kg CO₂/day</text>
+                        </g>
+                    </g>
+                </g>
+
+                <!-- ==================== ALERTS NOTIFICATION ==================== -->
+                <g id="alerts">
+                    <text x="700" y="560" class="section-title">🚨 ALERT SYSTEM</text>
+
+                    <g class="component-group">
+                        <rect x="700" y="580" width="200" height="80" rx="10" fill="rgba(6, 214, 160, 0.1)" stroke="#06d6a0" stroke-width="2"/>
+
+                        <!-- Status badge -->
+                        <rect x="720" y="600" width="80" height="25" rx="12" fill="#06d6a0"/>
+                        <text x="760" y="617" text-anchor="middle" font-family="Orbitron" font-size="10" font-weight="bold" fill="#0a0f1a">STABLE</text>
+
+                        <!-- Alert message -->
+                        <text x="820" y="605" class="label-text">All parameters</text>
+                        <text x="820" y="620" class="label-text">within optimal range</text>
+
+                        <!-- Bell icon -->
+                        <g transform="translate(760, 640)">
+                            <path d="M0 0 Q0 -10 -8 -10 Q8 -10 8 0 L8 5 L-8 5 L-8 0" fill="none" stroke="#06d6a0" stroke-width="1.5"/>
+                            <circle cx="0" cy="8" r="2" fill="#06d6a0"/>
+                        </g>
+                    </g>
+                </g>
+
+                <!-- ==================== SUSTAINABILITY IMPACT ==================== -->
+                <g id="sustainability">
+                    <text x="50" y="720" class="section-title">♻️ SUSTAINABILITY IMPACT</text>
+
+                    <g class="component-group">
+                        <rect x="50" y="740" width="180" height="50" rx="8" fill="rgba(0, 180, 216, 0.1)" stroke="#00b4d8" stroke-width="1"/>
+                        <text x="70" y="765" font-size="18">💧</text>
+                        <text x="90" y="765" class="label-text" fill="#00b4d8">85% Water Saved</text>
+                    </g>
+
+                    <g class="component-group">
+                        <rect x="240" y="740" width="180" height="50" rx="8" fill="rgba(6, 214, 160, 0.1)" stroke="#06d6a0" stroke-width="1"/>
+                        <text x="260" y="765" font-size="18">🌍</text>
+                        <text x="280" y="765" class="label-text" fill="#06d6a0">12.4 kg CO₂ Offset</text>
+                    </g>
+
+                    <g class="component-group">
+                        <rect x="430" y="740" width="180" height="50" rx="8" fill="rgba(0, 217, 165, 0.1)" stroke="#00d9a5" stroke-width="1"/>
+                        <text x="450" y="765" font-size="18">O₂</text>
+                        <text x="480" y="765" class="label-text" fill="#00d9a5">24.8 L/day O₂</text>
+                    </g>
+                </g>
+
+                <!-- ==================== DATA FLOW ARROWS ==================== -->
+                <g id="flow-arrows" fill="none" stroke="#00d9a5" stroke-width="2">
+                    <!-- Farm to Sensors -->
+                    <path d="M250 580 L250 550" marker-end="url(#arrowhead)"/>
+
+                    <!-- Sensors to ESP32 (via curves) -->
+                    <path d="M125 680 C125 720 450 720 540 500" class="connection-line"/>
+                    <path d="M235 680 C235 720 480 720 560 500" class="connection-line"/>
+                    <path d="M345 680 C345 720 510 720 560 500" class="connection-line"/>
+                </g>
+
+                <!-- Arrow marker definition -->
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#00d9a5"/>
+                    </marker>
+                    <linearGradient id="healthGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#ef476f"/>
+                        <stop offset="50%" style="stop-color:#ffd166"/>
+                        <stop offset="100%" style="stop-color:#06d6a0"/>
+                    </linearGradient>
+                </defs>
+
+                <!-- ==================== COMPONENT LABELS ==================== -->
+                <g font-family="Orbitron" font-size="12" fill="#7a8c99">
+                    <text x="520" y="300">EDGE</text>
+                    <text x="555" y="300">→</text>
+                    <text x="575" y="300">CLOUD</text>
+                    <text x="635" y="300">→</text>
+                    <text x="665" y="300">DISPLAY</text>
+                </g>
+            </svg>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #ef476f;"></div>
+                <span class="legend-text">Temperature Sensor</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #ffd166;"></div>
+                <span class="legend-text">pH Sensor</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #00b4d8;"></div>
+                <span class="legend-text">Turbidity Sensor</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #00d9a5;"></div>
+                <span class="legend-text">ESP32 Processing</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #06d6a0;"></div>
+                <span class="legend-text">Cloud/Dashboard</span>
+            </div>
+        </div>
+    </div>
+</body>
 </html>
